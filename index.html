@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mish Hackers | اختبار المسارات التقنية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--crimson:#b3202a;--deep:#7a1119;--cream:#f3e6c8;--paper:#fbf3de;--ink:#1b1717;--gold:#e8b830}
+*{-webkit-tap-highlight-color:transparent}
+body{font-family:'Cairo',sans-serif;color:var(--ink);min-height:100vh;
+background:radial-gradient(ellipse at 50% 0%,#e9b9a0 0%,#c9695a 35%,#5a1a1d 80%,#1b1717 100%) fixed;
+padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.en{font-family:'Cairo',sans-serif;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.brand{letter-spacing:.35em;font-weight:900}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:0 0 0 4px var(--cream),0 0 0 6px var(--ink),0 20px 40px rgba(0,0,0,.4);position:relative}
+.card::before{content:"";position:absolute;inset:8px;border:1px solid rgba(179,32,42,.35);border-radius:12px;pointer-events:none}
+.sun{width:170px;height:170px;border-radius:50%;margin:0 auto;
+background:radial-gradient(circle at 40% 35%,#d1383f,#8e1620 70%);
+box-shadow:0 0 0 4px rgba(27,23,23,.6),0 0 60px rgba(179,32,42,.7);animation:pulse 3.5s ease-in-out infinite;
+display:flex;align-items:center;justify-content:center;color:var(--cream);font-size:2.6rem;font-weight:900;writing-mode:horizontal-tb}
+@keyframes pulse{50%{box-shadow:0 0 0 4px rgba(27,23,23,.6),0 0 100px rgba(232,184,48,.55);transform:scale(1.04)}}
+.btn{background:var(--crimson);color:var(--cream);border:2px solid var(--ink);border-radius:12px;font-weight:700;padding:.75rem 1.5rem;transition:.2s;box-shadow:0 4px 0 var(--ink)}
+.btn:hover{background:var(--deep)}.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink)}.btn.ghost:hover{background:var(--cream)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.opt{width:100%;text-align:right;padding:.9rem 1rem;border:2px solid var(--ink);border-radius:12px;background:#fff9ea;transition:.2s;font-weight:600;line-height:1.7}
+.opt:hover{background:var(--cream);transform:translateX(-4px)}
+.opt.sel{background:var(--crimson);color:var(--cream);box-shadow:0 0 18px rgba(179,32,42,.6)}
+.screen{animation:fadeIn .5s ease both}.screen.out{animation:fadeOut .25s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeOut{to{opacity:0;transform:translateY(-10px)}}
+.glow{animation:glow 2.2s ease-in-out infinite;text-shadow:0 0 18px rgba(179,32,42,.7)}
+@keyframes glow{50%{text-shadow:0 0 38px rgba(232,184,48,.95),0 0 10px rgba(179,32,42,.9)}}
+.reveal{animation:reveal 1.2s cubic-bezier(.2,1.2,.3,1) both}
+@keyframes reveal{from{opacity:0;transform:scale(.3) rotate(-8deg);filter:blur(12px)}to{opacity:1;transform:none;filter:none}}
+.bar{height:12px;background:#e4d3ae;border:1.5px solid var(--ink);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(270deg,var(--deep),var(--crimson),var(--gold));transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.petal{position:fixed;top:-20px;width:10px;height:10px;background:#c0394a;border-radius:0 100% 0 100%;opacity:.7;animation:fall linear infinite;pointer-events:none;z-index:0}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+#app{position:relative;z-index:1}
+</style>
+</head>
+<body>
+<div id="petals"></div>
+<main id="app" class="max-w-xl mx-auto px-4 py-6">
+  <header class="text-center mb-5">
+    <div class="text-5xl font-black text-[#f3e6c8]" style="text-shadow:0 2px 0 #1b1717" aria-hidden="true">通常破壊</div>
+    <h1 class="en brand text-[#f3e6c8] text-xl mt-1" style="text-shadow:0 2px 0 #1b1717">MISH HACKERS</h1>
+  </header>
+  <section id="view"></section>
+  <footer class="text-center text-[#f3e6c8]/70 text-xs mt-6"><span class="en">Mish Hackers</span> © 2026</footer>
+</main>
+
+<script>
+/* ============ DATA ============ */
+const T = {
+ F:"Front-end web developer", B:"Back-end web developer", D:"Data Scientist", C:"Cloud Architect", G:"Game Developer",
+ S:"Software Developer", A:"AI engineer", X:"Cybersec Analyst", O:"DevOps Specialist", Q:"Database Admin"
+};
+const INFO = {
+ F:{i:"🎨",d:"أنت اللي بتحوّل الفكرة لحاجة الناس تشوفها وتلمسها. شغلك إنك تبني الواجهات والصفحات بـ HTML وCSS وJavaScript وFrameworks زي React، وتخلي تجربة المستخدم سلسة وجميلة. لو بتحب التصميم والتفاصيل والنتيجة الفورية قدام عينيك، ده مسارك."},
+ B:{i:"⚙️",d:"أنت العقل المدبر اللي ورا الكواليس. بتبني الـ Server والـ APIs وبتربط التطبيق بالـ Database وتحط منطق الشغل. كل مرة تضغط فيها زرار ويحصل حاجة، فيه Back-end بيشتغل. مناسب لمحبي المنطق والتنظيم وحل المشاكل المعقدة."},
+ D:{i:"📊",d:"بتحوّل الأرقام الخام لقصص وقرارات. بتجمع الداتا وتنظفها وتحللها بالـ Statistics وبلغات زي Python لتكتشف الأنماط المخفية وتتنبأ بالمستقبل. لو بتحب الفضول والأرقام والبحث عن الإجابات، هتحب المجال ده."},
+ C:{i:"☁️",d:"بتصمم البنية التحتية على الـ Cloud زي AWS وAzure وGCP بحيث السيستم يكبر ويستحمل ملايين اليوزرز ويفضل آمن وبتكلفة معقولة. أنت المهندس المعماري للأنظمة الكبيرة، بتفكر في الصورة الكاملة."},
+ G:{i:"🎮",d:"بتصنع عوالم تفاعلية بتخلي الناس تنسى الوقت. بتجمع بين البرمجة والـ Physics والـ Graphics والإبداع باستخدام Unity أو Unreal. لو بتحب الألعاب وتحب تبنيها مش بس تلعبها، ده مسارك."},
+ S:{i:"💻",d:"بتبني برامج وأنظمة متكاملة بكود نضيف ومنظم، وبتهتم بالـ Algorithms والـ Design Patterns والـ Architecture. أساس قوي تقدر منه تتحول لأي مجال تاني. مناسب لعشاق الـ Logic وحل المسائل وكتابة كود يعيش سنين."},
+ A:{i:"🧠",d:"بتعلّم الآلات تفكر وتتعلم. بتبني Models بالـ Machine Learning والـ Deep Learning تفهم الصور واللغة وتقدم توصيات ذكية وChatbots. لو بتحب الرياضيات والمستقبل وتحب تشوف الكمبيوتر بيتعلم، أهلاً بيك."},
+ X:{i:"🛡️",d:"أنت الحارس الرقمي. بتحمي الأنظمة من الهجمات وتكتشف الثغرات قبل الهاكرز، وبتحلل الـ Logs والتهديدات وتستجيب للحوادث. مناسب لعقلية الفضولي الذكي اللي بيفكر زي المهاجم عشان يدافع أحسن."},
+ O:{i:"🚀",d:"بتربط بين البرمجة والتشغيل. بتأتمت الـ Build والـ Deployment باستخدام CI/CD وDocker وKubernetes وبتراقب السيستم عشان يفضل شغال 24/7. لو بتكره الشغل اليدوي المتكرر وبتحب تخلي كل حاجة أوتوماتيك، ده مسارك."},
+ Q:{i:"🗄️",d:"أنت حارس كنز المعلومات. بتصمم قواعد البيانات وتحسّن الـ Queries وتضمن الـ Backup والأمان والسرعة والـ Integrity للداتا. بدونك أي شركة تفقد أهم أصولها. مناسب للمنظمين الدقيقين اللي بيحبوا النظام."}
+};
+const q=(t,o)=>({t,o:o.map(([x,w])=>({x,w:Object.fromEntries([...w.matchAll(/([A-Z])(\d)/g)].map(m=>[m[1],+m[2]]))}))});
+const Q=[
+q("لما بتستخدم أي تطبيق على موبايلك، إيه أكتر حاجة بتشدك وتخليك تسأل \"ده معمول إزاي؟\"",[
+ ["شكله وألوانه وحركته وهو بينقلك بين الصفحات.","F4 G2 S1"],
+ ["إزاي بيجيب المعلومات بسرعة وبيفتكر حسابي وبياناتي.","B4 S2 Q1"],
+ ["إزاي بيقترح عليا حاجات تعجبني كأنه فاهمني.","A4 D3 B1"],
+ ["إزاي بيفضل شغال كويس مع إن ملايين الناس بيستخدموه في نفس الوقت.","C4 O3 X1"]]),
+q("التطبيق اللي بتستخدمه كل يوم بقى بطيء جداً. أول حاجة هتفكر فيها:",[
+ ["يمكن المعلومات المخزنة فيه كتير ومش مترتبة.","Q4 B2"],
+ ["يمكن الأجهزة اللي شغال عليها مش قادرة تتحمل الزحمة.","O4 C3 X1"],
+ ["أسجل امتى بيبطأ وأدور على نمط بيتكرر.","D4 X2 A1"],
+ ["يمكن طريقة كتابة البرنامج نفسه محتاجة تتحسن.","S4 B3 G1"]]),
+q("أي نشاط من دول ممكن تنسى معاه الوقت؟",[
+ ["تصميم لعبة فيها شخصيات بتتحرك وتتفاعل.","G4 F2"],
+ ["لعبة ألغاز بدور فيها على ثغرة أو سر مخفي.","X4 O2 C1"],
+ ["ترتيب كمية كبيرة من المعلومات المبعثرة واستخراج نتايج منها.","D4 Q2 A1"],
+ ["تجهيز كل حاجة بحيث تشتغل لوحدها من غير تدخل مني.","O4 C3 B1"]]),
+q("لو هتعمل مشروع تخرج، هتختار تشتغل على إيه؟",[
+ ["موقع أو تطبيق شكله يبهر الناس.","F4 G2 S1"],
+ ["نظام شغال ورا الكواليس بيخزن المعلومات ويرد بسرعة.","B4 S2 Q1"],
+ ["برنامج ذكي (AI) بيتعلم من أمثلة ويتوقع أو يصنف حاجة.","A4 D3 B1"],
+ ["منصة على الإنترنت بتكبر لوحدها لما الناس تزيد.","C4 O3 B1"]]),
+q("إيه أكتر حاجة بتضايقك في أي موقع أو تطبيق؟",[
+ ["شكله مش حلو أو صعب في الاستخدام.","F4 G1 S1"],
+ ["معلومات مكررة أو غلط ومش منظمة.","Q4 D2 B1"],
+ ["إن حسابي أو بياناتي تتسرق.","X4 O1 C1"],
+ ["إن كل تحديث بيحتاج ناس تقعد ساعات تشتغل عليه بإيديها.","O4 C2 S1"]]),
+q("لو هتجرب حاجة جديدة النهاردة، هتختار:",[
+ ["أبني صفحة ويب بسيطة وأشوفها قدامي.","F4 B1 S1"],
+ ["أصنع لعبة صغيرة.","G4 S2 F1"],
+ ["أعلّم برنامج يتعرف على الصور أو يتوقع حاجة.","A4 D3 S1"],
+ ["أتعلم إزاي الهاكرز بيفكروا عشان أحمي نفسي.","X4 O1 C1"]]),
+q("علاقتك بالرياضيات والأرقام إيه؟",[
+ ["بحبها وبحب النسب والاحتمالات والإحصاء.","D4 A3"],
+ ["بحبها لما تتحول لحركة وصورة زي اللي في الألعاب.","G4 A2 S1"],
+ ["بحب الألغاز والتفكير المنطقي خطوة بخطوة.","S4 B2 G1"],
+ ["مش أحسن حاجة عندي، بفضل الشغل العملي.","F3 O2 C1"]]),
+q("صاحبك عنده موقع بيوقف لما ناس كتير تدخله مرة واحدة. هتنصحه بإيه؟",[
+ ["يزود الأجهزة اللي بتشغله ويوزع عليها الزحمة.","C4 O3 B1"],
+ ["يراجع طريقة تخزين المعلومات وإزاي بتتجاب.","B4 Q3 S1"],
+ ["يتأكد إن مفيش حد بيزحم الموقع عن قصد عشان يوقفه.","X4 O2 C1"],
+ ["يركب تنبيهات تبلغه أول ما تظهر أي مشكلة.","O4 C2 B1"]]),
+q("لما بتلعب لعبة على الموبايل، إيه أكتر حاجة نفسك تعرف سرها؟",[
+ ["الشكل والمتعة والإحساس وانت بتلعب.","G4 F2 A1"],
+ ["إزاي الأعداء بيتصرفوا بذكاء.","A3 G3 D1"],
+ ["إزاي آلاف اللاعبين بيلعبوا مع بعض أونلاين.","B3 G2 C2"],
+ ["إزاي بيمنعوا الغشاشين.","X4 G1 B1"]]),
+q("في أي شغل جماعي، دورك الطبيعي هو:",[
+ ["اللي بيهتم بالشكل وراحة المستخدم.","F4 G1 S1"],
+ ["اللي بيحافظ على إن كل حاجة شغالة وبيحل الأزمات.","O4 X1 Q1"],
+ ["اللي بيحلل الأرقام ويطلع منها نتايج.","D4 A2 Q1"],
+ ["اللي بيرسم الخطة الكبيرة ويربط الأجزاء ببعض.","C3 S3 B2"]]),
+q("إيه اللي بيمتعك في بناء أي حاجة؟",[
+ ["إني أشوف النتيجة قدامي فوراً.","F4 G3 S1"],
+ ["إني أتعامل مع كميات ضخمة من المعلومات.","D3 Q3 A2"],
+ ["إني أتحكم في أجهزة وأنظمة كبيرة من بعيد.","C3 O3 X1"],
+ ["إني أحل لغز معقد بتفكير منطقي.","S3 B3 A1"]]),
+q("سمعت إن بيانات عملاء شركة اتسرقت. أول رد فعل ليك:",[
+ ["أعرف السارق دخل إزاي وأتتبع آثاره.","X4 D2 O1"],
+ ["أتأكد إن عندهم نسخة احتياطية سليمة من المعلومات.","Q4 C2 O1"],
+ ["أراجع البرنامج وأدور على عيب سمح بالدخول.","B3 X3 S2"],
+ ["أقوّي الأقفال: كلمات السر والصلاحيات.","C3 X3 Q1"]]),
+q("لو هتعمل أداة لنفسك، هتبقى:",[
+ ["Chatbot بيرد على الرسايل بذكاء.","A4 D1 B1"],
+ ["لوحة بتعرض أرقامي ورسوم بيانية بشكل حلو.","D3 F3 Q1"],
+ ["حاجة بتنفذ مهامي المتكررة لوحدها.","O4 S2 B1"],
+ ["لعبة صغيرة ألعب بيها مع أصحابي.","G4 F2 S1"]]),
+q("إيه اللي هيفرحك أكتر في شغلك؟",[
+ ["شغل منظم ونضيف وسهل أطوره بعدين.","S4 B2 F1"],
+ ["حركة ناعمة وشكل جميل.","F4 G2"],
+ ["إني ألاقي أي معلومة في ثانية من وسط ملايين المعلومات.","Q4 B2 D1"],
+ ["حاجة بتشتغل من نفسها من غير ما حد يلمسها.","O4 C2 D1"]]),
+q("أي مشكلة من دول تشوفها الأصعب؟",[
+ ["برنامج بياخد من ذاكرة الجهاز شوية بشوية لحد ما يتقل.","S3 G3 B1"],
+ ["عطل بيحصل بس لما شخصين يعملوا نفس الحاجة في نفس اللحظة.","B4 S2 C1"],
+ ["برنامج ذكي بيدي إجابات غلط.","A4 D3"],
+ ["ثغرة مش بتظهر إلا لما الناس الحقيقية تستخدم الموقع.","X4 O2 C1"]]),
+q("فتحت يوتيوب، أي فيديو هتدوس عليه؟",[
+ ["أحدث تصميمات المواقع والتطبيقات.","F4 B1 S1"],
+ ["إزاي الشركات الكبيرة بتشغل مواقعها على الإنترنت.","C4 O2 B1"],
+ ["إزاي الـ AI بيتعلم ويرسم ويكتب.","A4 D3"],
+ ["قصص هاكرز وإزاي اتمسكوا.","X4 O1 C1"]]),
+q("لو معاك جدول معلومات ضخم (زي قايمة عملاء)، هتحب:",[
+ ["أنظم أعمدته وأشيل التكرار منه.","Q4 B2 D1"],
+ ["أطلع منه إحصائيات وإجابات لأسئلة مفيدة.","D3 Q3 B1"],
+ ["أخلي برنامج يقرأ منه ويعرضه للناس.","B4 S2 Q1"],
+ ["أتأكد إن ليه نسخ احتياطية ومحمي كويس.","Q3 O2 C2"]]),
+q("أحسن إحساس ممكن توصله في شغلك:",[
+ ["مستخدم يقولك \"الشكل جميل جداً!\"","F4 G2"],
+ ["إنك حاولت تخترق نظام للتجربة ومقدرتش لأنه محمي كويس.","X4 O1"],
+ ["برنامجك الذكي يوصل لدقة 95%.","A4 D3"],
+ ["موقعك يشتغل شهور من غير ما يقع.","O3 C3 Q1"]]),
+q("أي جزء من عالم التقنية أقرب ليك؟",[
+ ["الشبكات والحماية (Wi-Fi والـ Firewalls).","X3 C3 O2"],
+ ["الجرافيكس وكروت الشاشة.","G4 A2 F1"],
+ ["البرمجة نفسها وبس.","S4 B2 F1"],
+ ["أجهزة السيرفرات الكبيرة اللي بتشغل الخدمات.","C4 O3"]]),
+q("لو هتبني تطبيق بيرشح أفلام، هتشتغل على:",[
+ ["شكل عرض الأفلام للمستخدم.","F4 B1 S1"],
+ ["الذكاء اللي بيتوقع ذوق كل مستخدم.","A4 D3"],
+ ["تخزين الأفلام والمعلومات وربطها ببعض.","B3 Q3 S1"],
+ ["التأكد إنه يشتغل مع ملايين المستخدمين.","C4 O3 B1"]]),
+q("أي نوع شغل أقرب لشخصيتك؟",[
+ ["إبداعي وفني.","F3 G3"],
+ ["تحليلي وإحصائي.","D4 A2"],
+ ["أمني ودفاعي.","X4 O1 C1"],
+ ["هندسي ومنظم.","S3 Q2 C2"]]),
+q("معاك ساعة فاضية، هتعمل إيه؟",[
+ ["أجرب تأثيرات بصرية وحركات مبهرة.","G4 F3"],
+ ["أخلي الكمبيوتر يعمل مهمة مملة لوحده.","O3 B2 S1"],
+ ["أحل لغز برمجي.","S4 B2 A1"],
+ ["ألعب تحدي أمن معلومات (زي لعبة تخمين وفك شفرات).","X4 O1 B1"]]),
+q("موقع بياخد وقت طويل في التحميل. هتعمل إيه؟",[
+ ["أصغّر الصور وأحمّل المحتوى تدريجياً.","F4 S1 C1"],
+ ["أحط الموقع على أكتر من مكان في العالم عشان يبقى أقرب للناس.","C4 O2 B1"],
+ ["أحسّن طريقة تخزين المعلومات والبحث فيها.","Q3 B3 S1"],
+ ["أدرس سجلات الزيارات وأدور على نمط.","D3 O2 X1"]]),
+q("أنهي جملة تعبر عنك أكتر؟",[
+ ["بحب أبني حاجة الناس تلمسها بإيديها.","F3 S2 G2"],
+ ["بحب أحل المشاكل المعقدة اللي ورا الكواليس.","B4 S2 Q1"],
+ ["بحب أكتشف المعلومات المخفية جوه الأرقام.","D4 A2 X1"],
+ ["بحب أحمي الناس والأنظمة.","X4 O1 C1"]]),
+q("مشروع كبير مقسوم لأجزاء صغيرة، تحب تتولى إيه؟",[
+ ["رسم الخطة وتحديد دور كل جزء.","C3 S3 B2"],
+ ["بناء جزء واحد وأخليه يتكلم مع الباقي بنظام.","B4 S2 Q1"],
+ ["تجهيز الأجزاء كلها تتنزل وتشتغل أوتوماتيك.","O4 C3 B1"],
+ ["مراقبتها وقراءة أرقام أدائها.","O3 D2 C1"]]),
+q("لو معاك ميزانية للشراء، هتشتري:",[
+ ["كمبيوتر قوي بكارت شاشة ممتاز للجرافيكس.","G4 A2 F1"],
+ ["جهاز سيرفر شخصي أجرب عليه حاجات.","O3 C2 B2"],
+ ["كمية بيانات ضخمة أحللها.","D4 A2 Q1"],
+ ["شاشة ممتازة للتصميم.","F4 G1 S1"]]),
+q("لو مشروع فشل، غالباً السبب هيكون:",[
+ ["ضعف في الحماية.","X4 C1 O1"],
+ ["خطة مش مرنة ومش بتكبر مع المشروع.","S3 C3 B1"],
+ ["معلومات غلط أو مش منظمة.","D3 Q3 A1"],
+ ["تجربة استخدام سيئة.","F4 G1 S1"]]),
+q("إيه حلمك المهني؟",[
+ ["أنشر لعبة تحقق ملايين التحميلات.","G4 F2 S1"],
+ ["أبني ذكاء اصطناعي يفيد المجتمع.","A4 D2 S1"],
+ ["أدير الأنظمة اللي بتشغل شركة عالمية.","C4 O3"],
+ ["أكون هاكر أخلاقي بيحمي الشركات.","X4 O1 C1"]]),
+q("لما حاجة بتتعطل، بتحب:",[
+ ["أدور على سببها خطوة بخطوة جوه البرنامج.","S3 B3 G1"],
+ ["أتابع اللي بيظهر قدامي على الشاشة.","F4 G2 S1"],
+ ["أفتح السجلات وأدور على أدلة.","O3 D2 X2"],
+ ["أتأكد إن المعلومات نفسها سليمة.","Q4 D2 B1"]]),
+q("لو هتنصح مبتدئ، تنصحه يبدأ بإيه؟",[
+ ["يبني صفحة ويب بسيطة.","F4 B1 S1"],
+ ["يتعلم Python وتحليل الأرقام.","D3 A3 B1"],
+ ["يتعلم Linux وأساسيات الشبكات.","O3 X3 C1"],
+ ["يتعلم C++ أو C# ويعمل بيهم ألعاب.","G3 S3 A1"]])
+];
+
+/* ============ ENGINE ============ */
+const KEYS=Object.keys(T);
+// theoretical max per track = sum of best weight per question
+const MAX=Object.fromEntries(KEYS.map(k=>[k,Q.reduce((s,qq)=>s+Math.max(0,...qq.o.map(o=>o.w[k]||0)),0)]));
+function compute(ans){
+  const raw=Object.fromEntries(KEYS.map(k=>[k,0]));
+  ans.forEach((a,i)=>{ if(a==null)return; const w=Q[i].o[a].w; for(const k in w) raw[k]+=w[k]; });
+  // fuzzy membership: ratio to reachable max, softened with sqrt so partial matches stay meaningful
+  return KEYS.map(k=>({k,name:T[k],raw:raw[k],pct:Math.round(Math.sqrt(raw[k]/MAX[k])*1000)/10}))
+             .sort((a,b)=>b.pct-a.pct||b.raw-a.raw);
+}
+
+/* ============ STATE ============ */
+const LS='mish_hackers_quiz_v1';
+let st={screen:'welcome',i:0,ans:Array(Q.length).fill(null)};
+try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.ans&&s.ans.length===Q.length)st=s;}catch(e){}
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}};
+const view=document.getElementById('view');
+const ar=n=>n.toLocaleString('ar-EG');
+
+function go(fn){
+  const el=view.firstElementChild;
+  if(el){el.classList.add('out');setTimeout(()=>{fn();},230);}else fn();
+}
+function render(){
+  if(st.screen==='welcome')welcome();
+  else if(st.screen==='quiz')quiz();
+  else result();
+  save();
+}
+function mount(html){view.innerHTML=`<div class="screen">${html}</div>`;window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ============ SCREENS ============ */
+function welcome(){
+  const resume=st.ans.some(a=>a!=null);
+  mount(`<div class="card p-6 text-center">
+    <div class="sun mb-5" aria-hidden="true">道</div>
+    <h2 class="text-2xl font-black mb-2">اكتشف مسارك التقني</h2>
+    <p class="text-sm leading-7 mb-1">٣٠ سؤال بسيط بنحلل بيهم شخصيتك ونطلعلك نسبة توافقك مع <span class="en font-bold">10 Technical Tracks</span>.</p>
+    <p class="text-xs opacity-70 mb-5">مش لازم تكون عندك أي خلفية تقنية، ومفيش إجابة صح أو غلط. اختار اللي بيشبهك فعلاً.</p>
+    <button id="start" class="btn text-lg w-full">${resume?'كمّل الاختبار':'ابدأ الاختبار'}</button>
+    ${resume?'<button id="fresh" class="btn ghost w-full mt-3 text-sm">ابدأ من الأول</button>':''}
+  </div>`);
+  document.getElementById('start').onclick=()=>go(()=>{
+    if(!resume){st={screen:'quiz',i:0,ans:Array(Q.length).fill(null)};}
+    else{st.screen='quiz';st.i=Math.min(st.ans.findIndex(a=>a==null)<0?Q.length-1:st.ans.findIndex(a=>a==null),Q.length-1);}
+    render();});
+  const f=document.getElementById('fresh');
+  if(f)f.onclick=()=>go(()=>{st={screen:'quiz',i:0,ans:Array(Q.length).fill(null)};render();});
+}
+
+function quiz(){
+  const i=st.i,qq=Q[i],pct=(i/Q.length)*100;
+  mount(`<div class="card p-5">
+    <div class="flex justify-between text-sm font-bold mb-2"><span>السؤال ${ar(i+1)} من ${ar(Q.length)}</span><span>${ar(Math.round(pct))}٪</span></div>
+    <div class="bar mb-5"><i id="pb" style="width:${pct}%"></i></div>
+    <h2 class="text-lg font-black leading-8 mb-4">${qq.t}</h2>
+    <div class="space-y-3" id="opts">
+      ${qq.o.map((o,n)=>`<button class="opt ${st.ans[i]===n?'sel':''}" data-n="${n}">${o.x}</button>`).join('')}
+    </div>
+    <div class="flex justify-between mt-5">
+      <button id="prev" class="btn ghost" ${i===0?'disabled':''}>السابق</button>
+      <button id="next" class="btn" ${st.ans[i]==null?'disabled':''}>${i===Q.length-1?'اعرض النتيجة':'التالي'}</button>
+    </div></div>`);
+  requestAnimationFrame(()=>{const p=document.getElementById('pb');if(p)p.style.width=((i+1)/Q.length*100)+'%';});
+  const next=()=>go(()=>{if(i===Q.length-1){st.screen='result';}else st.i++;render();});
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    st.ans[i]=+b.dataset.n;save();
+    document.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));
+    document.getElementById('next').disabled=false;
+    setTimeout(next,320);
+  });
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=()=>go(()=>{st.i--;render();});
+}
+
+function result(){
+  const r=compute(st.ans),top=r[0],info=INFO[top.k];
+  mount(`<div class="card p-6 text-center">
+    <p class="text-sm font-bold opacity-80">مسارك الأنسب هو</p>
+    <div class="text-6xl my-2 reveal">${info.i}</div>
+    <h2 class="en text-2xl font-black text-[#b3202a] reveal" style="animation-delay:.2s">${top.name}</h2>
+    <div class="glow text-7xl font-black my-3 reveal" style="animation-delay:.5s;color:#b3202a"><span id="big" class="en">0</span><span class="en">%</span></div>
+    <p class="text-sm font-bold mb-2">نسبة التوافق</p>
+    <p class="leading-8 text-[15px] text-right bg-[#f3e6c8] border border-[#1b1717] rounded-xl p-4 mt-3">${info.d}</p>
+  </div>
+  <div class="card p-5 mt-5">
+    <h3 class="font-black mb-4">باقي المسارات</h3>
+    <div class="space-y-4">
+    ${r.slice(1).map((t,n)=>`<div>
+      <div class="flex justify-between text-sm font-bold mb-1"><span class="en">${INFO[t.k].i} ${t.name}</span><span class="en">${t.pct.toFixed(1)}%</span></div>
+      <div class="bar"><i data-w="${t.pct}" style="transition-delay:${n*90}ms"></i></div></div>`).join('')}
+    </div>
+    <div class="grid grid-cols-2 gap-3 mt-6">
+      <button id="retake" class="btn ghost">إعادة الاختبار</button>
+      <button id="share" class="btn">مشاركة النتيجة</button>
+    </div><p id="msg" class="text-center text-xs mt-3 h-4"></p>
+  </div>`);
+  // count up
+  const big=document.getElementById('big'),t0=performance.now(),D=1800;
+  (function tick(n){const p=Math.min((n-t0)/D,1);big.textContent=(top.pct*(1-Math.pow(1-p,3))).toFixed(1);if(p<1)requestAnimationFrame(tick);})(t0);
+  setTimeout(()=>document.querySelectorAll('[data-w]').forEach(e=>e.style.width=e.dataset.w+'%'),400);
+  document.getElementById('retake').onclick=()=>go(()=>{st={screen:'welcome',i:0,ans:Array(Q.length).fill(null)};render();});
+  document.getElementById('share').onclick=async()=>{
+    const txt=`حصلت على ${top.pct.toFixed(1)}% توافق مع مسار ${top.name} في اختبار Mish Hackers! 🔥\nجرّب انت كمان: ${location.href}`;
+    const m=document.getElementById('msg');
+    try{ if(navigator.share){await navigator.share({title:'Mish Hackers',text:txt});}
+         else{await navigator.clipboard.writeText(txt);m.textContent='تم نسخ النتيجة ✓';} }
+    catch(e){ m.textContent='تعذّرت المشاركة'; }
+  };
+}
+
+/* petals */
+(function(){const c=document.getElementById('petals');
+for(let i=0;i<14;i++){const p=document.createElement('span');p.className='petal';
+p.style.left=Math.random()*100+'vw';p.style.animationDuration=(8+Math.random()*10)+'s';p.style.animationDelay=(-Math.random()*12)+'s';
+p.style.transform=`scale(${.6+Math.random()})`;c.appendChild(p);}})();
+
+render();
+</script>
+</body>
+</html>
